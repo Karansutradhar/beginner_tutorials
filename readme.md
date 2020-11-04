@@ -1,8 +1,10 @@
-# Beginner Tutorials ROS Package for simple Publisher/Subscriber
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+---
+# Beginner Tutorials ROS Package for ROS Services, Logging and Launch files
 
 ## Overview and Description
 
-This repository contains Publisher/Subscriber ROS package which publishes simple string message.
+This repository contains Publisher/Subscriber ROS package which publishes simple string message. Also creation of ROS Services, Logging and Launch files
 
 ## License
 
@@ -15,8 +17,11 @@ Karan Sutradhar
 ## Dependencies/Assumptions
 
 This ROS Melodic package was created and tested on ubuntu 18.04 (Linux).
+C++ 11
 The catkin_make is used for building this package.
-No other dependencies required.
+
+## Tutorials to create and build a package with Publisher and Subscriber
+http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber%28c%2B%2B%29
 
 ## Steps to run this package
 
@@ -34,11 +39,13 @@ roscore
 Open a new terminal window and type:
 ```
 cd catkin_ws
+source devel/setup.bash
 rosrun beginner_tutorials talker
 ```
 Open a new terminal window and type:
 ```
 cd catkin_ws
+source devel/setup.bash
 rosrun beginner_tutorials listener
 ``` 
 To end the process, type ctrl+C on all the terminal windows one by one.
