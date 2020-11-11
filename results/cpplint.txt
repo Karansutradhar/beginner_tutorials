@@ -1,0 +1,7 @@
+./src/beginner_tutorials/src/listener.cpp:75:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+Done processing ./src/beginner_tutorials/src/listener.cpp
+Done processing ./src/beginner_tutorials/src/talker.cpp
+Done processing ./src/beginner_tutorials/test/main_test.cpp
+./src/beginner_tutorials/test/talker_test.cpp:50:  Lines should be <= 80 characters long  [whitespace/line_length] [2]
+Done processing ./src/beginner_tutorials/test/talker_test.cpp
+Total errors found: 2
