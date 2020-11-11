@@ -7,6 +7,7 @@
  */
 
 #include <sstream>
+#include <tf/transform_broadcaster.h>
 #include "ros/ros.h"
 #include "std_msgs/String.h"
 #include <string>
@@ -17,11 +18,15 @@ std::string actualMsgs = "I am the ROS talker talking";
 bool UpdateString(
     beginner_tutorials::UpdateString::Request& request,
     beginner_tutorials::UpdateString::Response& response) {
-
-  actualMsgs = request.inputString;
-  response.outputString = "Modification of the actual string by the user to: "
-      + request.inputString;
-  ROS_WARN_STREAM("Modification of the message by the user");
+  ROS_INFO_STREAM("request: " << request.inputString);
+  if (request.inputString == "anything") {
+    response.outputString = "Yes";
+  } else if (request.inputString == "nothing") {
+    response.outputString = "Wrong";
+  } else {
+    request.inputString = "Warnings";
+  }
+  ROS_INFO_STREAM("Responding back the messages " << response.outputString);
   return true;
 }
 
@@ -41,12 +46,35 @@ int main(int argc, char **argv) {
    */
   ros::init(argc, argv, "talker");
 
+  int frequency = 10;
+
+  if (argc >= 2)
+    int frequency = atoi(argv[1]);
+
   /**
    * NodeHandle is the main access point to communications with the ROS system.
    * The first NodeHandle constructed will fully initialize this node, and the last
    * NodeHandle destructed will close down the node.
    */
   ros::NodeHandle n;
+
+  tf::TransformBroadcaster b;
+  tf::Transform transform;
+
+  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
+  ros::Rate loop_rate(10);
+  int count = 0;
+  while (ros::ok()){
+    /**
+     * ServiceServer creates a server of the service UpdateString
+     */
+    ros::ServiceServer service = n.advertiseService("conversation", UpdateString);
+
+    std_msgs::String msg;
+
+    std::stringstream ss;
+    ss << "ROS is the best" << count;
+    msg.data = ss.str();
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -67,8 +95,17 @@ int main(int argc, char **argv) {
    */
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
   ros::ServiceServer server = n.advertiseService("UpdateString", UpdateString);
-  ros::Rate loop_rate(10);
+  ros::Rate loop_rate(frequency);
 
+  ROS_WARN_STREAM("The input frequency by the user is: " <<frequency);
+  if (frequency < 0){
+    ROS_FATAL_STREAM("Invalid input freuency");
+    frequency = 10;
+  }
+  else if(frequency == 0){
+    ROS_ERROR_STREAM("0 cannot be the input frequency ");
+    frequency = 10;
+  }
   /**
    * A count of how many messages we have sent. This is used to create
    * a unique string for each message.
@@ -95,11 +132,17 @@ int main(int argc, char **argv) {
      */
     chatter_pub.publish(msg);
 
+    ROS_INFO_STREAM("Wait for the Response");
     ros::spinOnce();
-
+    
     loop_rate.sleep();
     ++count;
+
+    transform.setOrigin(tf::Vector3(0.0, 2.0, 0.0) );
+    transform.setRotation( tf::Quaternion(0, 0, 0, 1) );
+    b.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "RosWorld", "talker"));
   }
+}
 
 
   return 0;
