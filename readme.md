@@ -50,6 +50,76 @@ rosrun beginner_tutorials listener
 ``` 
 To end the process, type ctrl+C on all the terminal windows one by one.
 
+## ROS Service Instructions
+
+After executioon, open a new terminal and type:
+```
+cd catkin_ws
+catkin_make
+source devel/setup.bash
+rosservice call /UpdateString "Enter the new string here"
+**NOTE: rosservice call /UpdateString "Working on ROS"
+```
+As soon as you enter the new text, there would be a change in the message output.
+
+### ROS Launch Instrustions
+```
+cd catkin_ws
+catkin_make
+source devel/setup.bash
+roslaunch beginner_tutorials stringOutput.launch 
+```
+
+### Variation in Loop Frequency
+
+Change the frequency parameter at the end after executing the following commands:
+```
+cd catkin_ws
+source devel/setup.bash
+roslaunch beginner_tutorials stringOutput.launch frequency: "integer above zero"
+**NOTE: roslaunch beginner_tutorials stringOutput.launch frequency:=10
+```
+### Tf frames Inspection Instructions
+```
+cd catkin_ws
+source devel/setup.bash
+rosrun rqt_tf_tree rqt_tf_tree
+
+```
+### Instructions for running ROStest
+```
+cd catkin_ws
+source devel/setup.bash
+roslaunch talker_test.launch
+
+```
+### Instructions for recording ROSbag
+```
+cd catkin_ws
+source devel/setup.bash
+roslaunch talker_test.launch record:=true
+
+```
+### Instructions for Inspection of ROSbag file
+```
+cd catkin_ws/src/beginner_tutorials/screenshot
+rosbag info my_rosbag_file.bag
+
+```
+### Instructions for Inspection of ROSbag file
+In terminal 1
+```
+cd catkin_ws/src/beginner_tutorials/results
+rosbag play my_rosbag_file.bagSS
+
+```
+In terminal 2
+```
+cd catkin_ws
+source devel/setup.bash
+rosrun beginner_tutorials listener
+
+```
 ## Cpplint check
 ```
 cd  <path to repository>
