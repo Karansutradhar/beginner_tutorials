@@ -1,14 +1,14 @@
 <launch>
-    <!-- String1-->
-    <arg name = "inputString" default = "0" />
-    
-     <!-- String2-->
-    <arg name = "outputString" default = "0" />
-
-    <!-- Starts talker node-->
-    <node pkg = "beginner_tutorials" type = "talker" name = "UpdateString_server" output = "screen" />
-
-    <!-- Starts listener node-->
-    <node pkg = "beginner_tutorials" type = "listener" name = "UpdateString_client" output = "screen" args = "$(arg a) $(arg b)"/>
+    <env
+        name="ROSCONSOLE_CONFIG_FILE"
+        value="$(find beginner_tutorials)/config/config.conf"
+    />
+    <arg name = "pub_frequency" default = "10" />
+    <node pkg = "beginner_tutorials" type = "talker" name = "talker" output = "screen"/>
+     <param name = "frequency" value="$(arg pub_frequency)"/>
+    <node pkg = "beginner_tutorials" type = "listener" name = "listener" output = "screen" launch-prefix = "gnome-terminal -e"/>
+    <node pkg= "rosbag" name = "record" type = "record" args="record -o my_rosbag -a --duration=10"
+    if="$(arg record)" />
+    <test test-name="talker_test" pkg="beginner_tutorials" type="talker_test" />
 
 </launch>
