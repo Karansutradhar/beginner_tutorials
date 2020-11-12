@@ -18,16 +18,29 @@ std::string actualMsgs = "I am the ROS talker talking";
 bool UpdateString(
     beginner_tutorials::UpdateString::Request& request,
     beginner_tutorials::UpdateString::Response& response) {
-  ROS_INFO_STREAM("request: " << request.inputString);
-  if (request.inputString == "anything") {
-    response.outputString = "Yes";
-  } else if (request.inputString == "nothing") {
-    response.outputString = "Wrong";
-  } else {
-    request.inputString = "Warnings";
-  }
-  ROS_INFO_STREAM("Responding back the messages " << response.outputString);
+
+  actualMsgs = request.inputString;
+  response.outputString = request.inputString;
+  ROS_WARN_STREAM("Modification of the message by the user");
   return true;
+}
+
+/**
+ * @brief  Tf Broadcast
+ * @param  none
+ * @return none
+ */
+
+void poseCallback() {
+    static tf::TransformBroadcaster b;
+    tf::Transform transform;
+    transform.setOrigin(tf::Vector3(5.0, 10.0, 15.0));  // assigning static values
+    tf::Quaternion quat;
+    quat.setRPY(1, 1, 0);
+    transform.setRotation(quat);
+    b.sendTransform(tf::StampedTransform(transform,
+    ros::Time::now(), "world", "talk"));
+    // broadcast /talk frame with parent /world
 }
 
 /**
@@ -58,23 +71,11 @@ int main(int argc, char **argv) {
    */
   ros::NodeHandle n;
 
-  tf::TransformBroadcaster b;
-  tf::Transform transform;
-
-  ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
-  ros::Rate loop_rate(10);
-  int count = 0;
-  while (ros::ok()){
-    /**
-     * ServiceServer creates a server of the service UpdateString
-     */
-    ros::ServiceServer service = n.advertiseService("conversation", UpdateString);
-
-    std_msgs::String msg;
-
-    std::stringstream ss;
-    ss << "ROS is the best" << count;
-    msg.data = ss.str();
+  /**
+ * @brief  Tf Broadcast
+ * @param  none
+ * @return none
+ */
 
   /**
    * The advertise() function is how you tell ROS that you want to
@@ -96,6 +97,10 @@ int main(int argc, char **argv) {
   ros::Publisher chatter_pub = n.advertise<std_msgs::String>("chatter", 1000);
   ros::ServiceServer server = n.advertiseService("UpdateString", UpdateString);
   ros::Rate loop_rate(frequency);
+
+  /*
+   * Function to demonstrate uses of different logger levels
+   */
 
   ROS_WARN_STREAM("The input frequency by the user is: " <<frequency);
   if (frequency < 0){
@@ -120,7 +125,8 @@ int main(int argc, char **argv) {
     std::stringstream ss;
     ss << actualMsgs << count;
     msg.data = ss.str();
-
+    poseCallback();
+    
     //Display ROS info data
     ROS_INFO_STREAM("Message : "<< msg.data.c_str());
 
@@ -132,16 +138,11 @@ int main(int argc, char **argv) {
      */
     chatter_pub.publish(msg);
 
-    ROS_INFO_STREAM("Wait for the Response");
     ros::spinOnce();
     
     loop_rate.sleep();
     ++count;
 
-    transform.setOrigin(tf::Vector3(0.0, 2.0, 0.0) );
-    transform.setRotation( tf::Quaternion(0, 0, 0, 1) );
-    b.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "RosWorld", "talker"));
-  }
 }
 
 

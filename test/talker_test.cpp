@@ -1,4 +1,4 @@
-S/**
+/**
  *  Copyright 2020 Karan Sutradhar
  *  @file talker_test.cpp
  *  @author Karan Sutradhar
@@ -33,30 +33,28 @@ S/**
  *  Source file containing unit tests for talker node
  *
  */
-#include <gtest/gtest.h>
 #include <ros/ros.h>
 #include <ros/service_client.h>
+#include <gtest/gtest.h>
 #include "beginner_tutorials/UpdateString.h"
 
 /**
  * Declare a test
  */
-TEST(TestSuite, testCase1)
-{
+TEST(testNode, testCase){
+
   ros::NodeHandle n;
-  ros::ServiceClient client =
-    n.serviceClient<beginner_tutorials::UpdateString>("conversation");
-  
+  ros::ServiceClient client = n.serviceClient
+  <beginner_tutorials::UpdateString>("UpdateString");
   /**
    * test whether the client exists
    */
-  bool exists(client.waitForExistence(ros::Duration(2)));
-  EXPECT_TRUE(exists);
+  EXPECT_TRUE(client.waitForExistence(ros::Duration(5)));
   beginner_tutorials::UpdateString srv;
-  srv.request.inputString = "anything";
-  client.call(srv);
+    srv.request.inputString = "update";
+    client.call(srv);
     /**
    * test whether the correct response is output
    */
-  EXPECT_EQ("Yes", srv.response.outputString);
+    EXPECT_EQ("update", srv.response.outputString);
 }

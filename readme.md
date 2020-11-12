@@ -62,7 +62,7 @@ rosservice call /UpdateString "Enter the new string here"
 ```
 As soon as you enter the new text, there would be a change in the message output.
 
-### ROS Launch Instrustions
+### ROS Launch Instructions
 ```
 cd catkin_ws
 catkin_make
@@ -79,7 +79,26 @@ source devel/setup.bash
 roslaunch beginner_tutorials stringOutput.launch frequency: "integer above zero"
 **NOTE: roslaunch beginner_tutorials stringOutput.launch frequency:=10
 ```
-### Tf frames Inspection Instructions
+### Tf frames Running & Inspection Instructions
+In one terminal
+```
+cd catkin_ws
+source devel/setup.bash
+rosrun beginner_tutorials talker
+```
+In second terminal
+```
+cd catkin_ws
+source devel/setup.bash
+rosrun tf tf_echo /world /talk
+```
+PDF file generation
+```
+cd catkin_ws
+source devel/setup.bash
+rosrun tf view_frames
+```
+To inspect
 ```
 cd catkin_ws
 source devel/setup.bash
@@ -87,30 +106,42 @@ rosrun rqt_tf_tree rqt_tf_tree
 
 ```
 ### Instructions for running ROStest
+You will see test passing
 ```
 cd catkin_ws
 source devel/setup.bash
-roslaunch talker_test.launch
+catkin_make run_tests_beginner_tutorials
 
 ```
 ### Instructions for recording ROSbag
+In terminal one
 ```
 cd catkin_ws
 source devel/setup.bash
-roslaunch talker_test.launch record:=true
-
+roslaunch beginner_tutorials beginner_tutorials.launch frequency:=10 record:=true
 ```
-### Instructions for Inspection of ROSbag file
+### Instructions for running ROSbag file
+In terminal one
 ```
-cd catkin_ws/src/beginner_tutorials/screenshot
-rosbag info my_rosbag_file.bag
-
+roscore
+```
+In terminal two
+```
+cd catkin_ws
+source devel/setup.bash
+rosbag play src/beginner_tutorials/screenshot/my_rosbag_file.bag
+```
+In terminal third
+```
+cd catkin_ws
+source devel/setup.bash
+rosrun beginner_tutorials listener
 ```
 ### Instructions for Inspection of ROSbag file
 In terminal 1
 ```
 cd catkin_ws/src/beginner_tutorials/results
-rosbag play my_rosbag_file.bagSS
+rosbag play my_rosbag_file.bag
 
 ```
 In terminal 2

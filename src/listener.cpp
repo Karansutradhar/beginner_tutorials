@@ -1,20 +1,19 @@
 /**
- * @file talker.cpp
+ * @file listener.cpp
  * @author Karan Sutradhar
- * @brief The talker.cpp file for beginner_tutorials ROS package.
+ * @brief The listener.cpp file for beginner_tutorials ROS package.
  * It contains code for publishing a simple message.
  * @Copyright "Copyright 2020" <Karan Sutradhar>
  */
-#include <iostream>
+
 #include "ros/ros.h"
 #include "std_msgs/String.h"
-#include "beginner_tutorials/UpdateString.h"
 
 /**
  * This tutorial demonstrates simple receipt of messages over the ROS system.
  */
 void chatterCallback(const std_msgs::String::ConstPtr& msg) {
-  ROS_INFO_STREAM("I heard:," << msg->data.c_str());
+  ROS_INFO("I heard: [%s]", msg->data.c_str());
 }
 
 int main(int argc, char **argv) {
@@ -36,32 +35,6 @@ int main(int argc, char **argv) {
    * NodeHandle destructed will close down the node.
    */
   ros::NodeHandle n;
-
-  std::string message;
-  
-  /**
-   * getParam functions gets the parameter fed by the user while launching the .launch file
-   */
-
-  n.getParam("message", message);
-  std::cout << "\n" << message;
-  std::cout << "The program has nothing to say";
-  while (ros::ok()) {
-
-    ros::Subscriber subject = n.subscribe("chatter", 1000, chatterCallback);
-    /** 
-   * ServiceClient creates a client of the service UpdateString
-   */
-    ros::ServiceClient client =
-    n.serviceClient<beginner_tutorials::UpdateString>("conversation");
-
-    /**
-     * srv is a service object that contains the attributes in UpdateString.srv. The user 
-     * request message with their answer to the question
-     */
-    beginner_tutorials::UpdateString srv;
-    std::cout << "ROS is Best what do you think? (anthing/nothing)";
-    std::cin >> srv.request.inputString;
 
   /**
    * The subscribe() call is how you tell ROS that you want to receive messages
@@ -85,25 +58,7 @@ int main(int argc, char **argv) {
    * callbacks will be called from within this thread (the main one).  ros::spin()
    * will exit when Ctrl-C is pressed, or the node is shutdown by the master.
    */
-  if (client.call(srv)) {
-    if (srv.response.outputString == "Warnings") {
-        ROS_WARN_STREAM("Did not recieve any message");
-      } else {
-        ROS_INFO_STREAM(srv.response.outputString);
-      }
-    } else {
-      ROS_ERROR_STREAM("Failed to call service UpdateString");
-    }
-
-    /**
-     * If the user responds n to the question, the program gives off a fatal error 
-     */
-  if (srv.request.inputString == "nothing") {
-      ROS_FATAL_STREAM("The user doesn't use ROS");
-    }
-
   ros::spin();
-}
 
   return 0;
 }
