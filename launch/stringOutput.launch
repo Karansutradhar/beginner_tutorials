@@ -7,8 +7,8 @@
     <node pkg = "beginner_tutorials" type = "talker" name = "talker" output = "screen"/>
      <param name = "frequency" value="$(arg pub_frequency)"/>
     <node pkg = "beginner_tutorials" type = "listener" name = "listener" output = "screen" launch-prefix = "gnome-terminal -e"/>
-    <node pkg= "rosbag" name = "record" type = "record" args="record -o my_rosbag -a --duration=10"
-    if="$(arg record)" />
+    <node pkg= "rosbag" name = "rosbag_record_all" type = "record" respawn = "true" output ="screen" args="-a -O
+    $(find beginner_tutorials)/screenshot/my_rosbag_file.bag" if="$(arg record)"/>
     <test test-name="talker_test" pkg="beginner_tutorials" type="talker_test" />
 
 </launch>

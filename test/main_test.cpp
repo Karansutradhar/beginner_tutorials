@@ -43,11 +43,11 @@
 
 #include "ros/ros.h"
 #include <gtest/gtest.h>
+#include <ros/service_client.h>
 #include "beginner_tutorials/UpdateString.h"
 
 int main(int argc, char **argv){
   testing::InitGoogleTest(&argc, argv);
-  ros::init(argc, argv, "test1");
-  ros::NodeHandle n;
+  ros::init(argc, argv, "talker_test");
   return RUN_ALL_TESTS();
 }
